@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Data</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/client/css/homepage.css">
+    <link rel="stylesheet" href="/client/css/write-data.css">
+    <script src="/client/js/write-data.js" async></script>
+</head>
+
+
+<body>
+    <nav>
+        <div class="nav-content">
+          <div class="logo">
+            <a href="#">Enter Data</a>
+          </div>
+          <ul class="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/write-data">Enter Data</a></li>
+            <li><a href="/view-data">View Data</a></li>
+            <li><a href="/browse-data">Browse Data</a></li>
+            <li><a href="/calendar">Calendar</a></li>
+            <li><a href="/our-reads">Our Reads</a></li>
+          </ul>
+        </div>
+    </nav>
+
+    <section class="home"></section>
+        <div class="text" id="form-container">
+            <div class="form-group">
+                <label for="bookTitle" class="form-medium">Book Title:</label>
+                <input name="bookTitle" class="form-control" id="bookTitle"/>
+            </div>
+
+            <div class="form-group">
+                <label for="author" class="form-medium">Author:</label>
+                <input name="author" class="form-control" id="author"/>
+            </div>
+
+            <div class="form-group">
+                <label for="genre" class="form-medium">Genre:</label>
+                <input name="genre" class="form-control" id="genre"/>
+            </div>
+
+            <div class="form-group">
+                <label for="publisher" class="form-medium">Publisher:</label>
+                <input name="publisher" class="form-control" id="publisher"/>
+            </div>
+
+            <div class="form-group">
+                <label for="yearPublished" class="form-medium">Year Published:</label>
+                <input name="yearPublished" class="form-control" id="yearPublished"/>
+            </div>
+
+            <div class="form-group">
+                <label for="isbn" class="form-medium">ISBN:</label>
+                <input name="isbn" class="form-control" id="isbn"/>
+            </div>
+
+
+            <div class="button-container">
+                <div class="config-buttons">
+                <button class="edit_btn" id="submit">Submit</button>
+                </div>
+                <div class="config-buttons">
+                <button class="edit_btn" id="clear">Clear</button>
+                </div>
+            </div>
+        </div>
+
+</body>
+
+
+</html>

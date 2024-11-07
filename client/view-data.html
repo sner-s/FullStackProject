@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Data</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/client/css/view-data.css">
+    <link rel="stylesheet" href="/client/css/homepage.css">
+    <script src="/client/js/view-data.js" async></script>
+</head>
+
+
+<body>
+    <nav>
+        <div class="nav-content">
+          <div class="logo">
+            <a href="#">View Data</a>
+          </div>
+          <ul class="nav-links">
+            <li><a href="/home">Home</a></li>
+            <li><a href="/write-data">Enter Data</a></li>
+            <li><a href="/view-data">View Data</a></li>
+            <li><a href="/browse-data">Browse Data</a></li>
+            <li><a href="/calendar">Calendar</a></li>
+            <li><a href="/our-reads">Our Reads</a></li>
+          </ul>
+        </div>
+    </nav>
+
+    <section class="home"></section>
+    <div>
+        <table class="table">
+          <colgroup>
+            <col class='col-xs-3'>
+          </colgroup>
+          <thead>
+            <tr>
+                <th colspan="6">Book Log</th>
+            </tr>
+            <tr>
+              <th>Book Title</th>
+              <th>Author</th>
+              <th>Genre</th>
+              <th>Publisher</th>
+              <th>Year Published</th>
+              <th>ISBN</th>
+            </tr>
+          </thead>
+          <tbody id='libraryTable'></tbody>
+        </table>
+      </div>
+
+
+</body>
+
+
+</html>

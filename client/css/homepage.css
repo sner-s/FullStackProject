@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap');
+
+body {
+    background-image: url("../images/space_book_club_background.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}
+
+nav .logo a{
+    font-weight: 500;
+    font-size: 35px;
+    color:rgb(163, 10, 240) ;
+    background-color: rgb(217, 194, 250);
+    padding-left: 10px;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Merienda', sans-serif;
+}
+
+
+
+nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0px;
+    transition: all 0.4s ease;
+}
+ 
+  nav .nav-content{
+    height: 80px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(217, 194, 250);
+  }
+
+  .nav-content .nav-links{
+    display: flex;
+    padding-right: 10px;
+    }
+
+  .nav-content .nav-links li{
+    list-style: none;
+    margin: 0 8px;
+    }
+
+   .nav-links li a{
+    text-decoration: none;
+    color:rgb(163, 10, 240) ;
+    background-color: rgb(217, 194, 250);
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px 4px;
+    transition: all 0.3s ease;
+    }
+
+   .nav-links li a:hover{
+    color: #ae345d;
+    background-color: #FFD0C6;
+    border-radius: 10px;
+   }
+
+
+
+
+
+.home{
+    height: 30vh;
+    width: 100%;
+}
+  h2{
+    font-size: 50px;
+    margin-bottom: 6px;
+    color: #ae345d;
+    text-align: right;
+    padding-right: 40px;
+    padding-bottom: 20px;
+    }
+
+  .text{
+    font-size: 20px;
+    text-align: justify;
+    padding: 50px 80px;
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+    color: #ae345d;
+    background-color: #ffd0c6ea;
+    }
