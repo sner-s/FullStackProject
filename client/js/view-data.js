@@ -1,4 +1,80 @@
-var data = [
+var bookclubURL = 'http://localhost:5000';
+
+main();
+
+function main() {
+    fetchRecords();
+    deleteRecord();
+}
+
+function showTable(data){
+    console.log("Data received for table:", data);
+    var htmlString = "";
+
+    for(var i = 0; i < data.length; i++){
+        htmlString += "<tr>";
+            htmlString += "<td>" + data[i].bookTitle + "</td>";
+            htmlString += "<td>" + data[i].author + "</td>";
+            htmlString += "<td>" + data[i].genre + "</td>";
+            htmlString += "<td>" + data[i].publisher + "</td>";
+            htmlString += "<td>" + data[i].yearPublished + "</td>";
+            htmlString += "<td>" + data[i].isbn + "</td>";
+            htmlString += `<td><button class="delete-btn" data-id="${data[i].id}">Delete</button></td>`;
+        htmlString += "</tr>";
+    }
+
+    $("#libraryTable").html(htmlString);
+    activateDeleteListeners();
+}
+
+// Function to submit data to the server
+function fetchRecords() {
+    $.ajax({
+        url: bookclubURL + "/get-records", 
+        type: "GET",
+        success: function(response) {
+            var responseData = JSON.parse(response);
+            console.log(responseData.data);
+            if (responseData.msg == "SUCCESS") {
+                showTable(responseData.data);
+            } else {
+                console.log(responseData.msg); 
+            }
+        },
+        error: function(response) {
+            console.log(response); 
+        }
+    });
+}
+
+function activateDeleteListeners() {
+    $(".delete-btn").click(function () {
+        var deleteID = this.getAttribute("data-id");
+        deleteRecord(deleteID);
+    });
+}
+
+function deleteRecord(deleteID) {
+    $.ajax({
+        url: bookclubURL + "/delete-record", 
+        type: "DELETE",
+        data: JSON.stringify({ id: deleteID }), 
+        contentType: "application/json",
+        success: function (response) {
+            var responseData = JSON.parse(response);
+            if (responseData.msg == "SUCCESS") {
+                fetchRecords();
+            } else {
+                console.log(responseData.msg);
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
+
+/*var data = [
     {
         bookTitle: "Assassins Blade",
         author: "Sarah J Maas",
@@ -42,31 +118,4 @@ var data = [
 ];
 
 
-jsonObject = data;
-
-main();
-
-function main() {
-    console.log(jsonObject);
-    console.log(jsonObject.length);
-
-    showTable();
-
-}
-
-function showTable(){
-    var htmlString = "";
-
-    for(var i = 0; i < jsonObject.length; i++){
-        htmlString += "<tr>";
-            htmlString += "<td>" + jsonObject[i].bookTitle + "</td>";
-            htmlString += "<td>" + jsonObject[i].author + "</td>";
-            htmlString += "<td>" + jsonObject[i].genre + "</td>";
-            htmlString += "<td>" + jsonObject[i].publisher + "</td>";
-            htmlString += "<td>" + jsonObject[i].yearPublished + "</td>";
-            htmlString += "<td>" + jsonObject[i].isbn + "</td>";
-        htmlString += "</tr>";
-    }
-
-    $("#libraryTable").html(htmlString);
-}
+jsonObject = data;*/

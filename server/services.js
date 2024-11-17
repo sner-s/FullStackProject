@@ -21,7 +21,6 @@ var services = function(app){
         var bookClubData = [];
 
         if(fs.existsSync(DB_FILE)){
-            //Read in current database
             fs.readFile(DB_FILE, "utf8", function(err, data){
                 if(err){
                     response.send(JSON.stringify({msg: err}));
@@ -55,7 +54,54 @@ var services = function(app){
         }
 
     });
+
+
+    app.get('/get-records', function(req, response) {
+        if (fs.existsSync(DB_FILE)) {
+            fs.readFile(DB_FILE, "utf8", function(err, data) {
+                if (err) {
+                    response.send(JSON.stringify({msg: err}));
+                } else {
+                    console.log("Data read from file:", data);
+                    response.send(JSON.stringify({msg: "SUCCESS", data: JSON.parse(data)}));
+                }
+            });
+        } else {
+            response.send(JSON.stringify({msg: "SUCCESS", data: []}));
+        }
+    });
+
+
+    app.delete('/delete-record', function (req, response) {
+
+        const recordID = req.body.id;
+        console.log("Deleting record with ID:", recordID);
+    
+        if (fs.existsSync(DB_FILE)) {
+            fs.readFile(DB_FILE, "utf8", function (err, data) {
+                if (err) {
+                    response.send(JSON.stringify({ msg: err }));
+                } else {
+                    let bookClubData = JSON.parse(data);
+                    bookClubData = bookClubData.filter((record) => record.id !== recordID);
+    
+                    fs.writeFile(DB_FILE, JSON.stringify(bookClubData), function (err) {
+                        if (err) {
+                            response.send(JSON.stringify({ msg: err }));
+                        } else {
+                            response.send(JSON.stringify({ msg: "SUCCESS" }));
+                        }
+                    });
+                }
+            });
+        } else {
+            response.send(JSON.stringify({ msg: "No records found!" }));
+        }
+    });
     
 };
+
+
+
 
 module.exports = services;
