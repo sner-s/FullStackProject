@@ -5,7 +5,7 @@ table {
     background-color: #ffd0c6ea;
     border-radius: 8px; 
     border: 2px solid #ae345d;
-    width: 70%;
+    width: 80%;
     margin: 20px auto;
 }
 
@@ -20,7 +20,7 @@ table {
 .table thead tr th {
     padding-top: 15px;
     padding-bottom: 15px;
-    font-size: 30px;
+    font-size: 28px;
     color: #ae345d;
     text-align:center;
 }
