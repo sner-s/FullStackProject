@@ -34,9 +34,9 @@ function fetchRecords() {
         type: "GET",
         success: function(response) {
             var responseData = JSON.parse(response);
-            console.log(responseData.data);
+            console.log(responseData.books);
             if (responseData.msg == "SUCCESS") {
-                showTable(responseData.data);
+                showTable(responseData.books);
             } else {
                 console.log(responseData.msg); 
             }

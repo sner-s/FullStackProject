@@ -1,11 +1,15 @@
-const { response } = require('express');
-const fs = require('fs');
-const path = require('path');
+const { res } = require('express');
 
-const DB_FILE = path.join(__dirname + '/files/data.txt');
+const { MongoClient, ObjectID } = require('mongodb');
+
+//Define Database URL
+const dbURL = "mongodb://127.0.0.1";
+
+//Define the database server
+const client = new MongoClient(dbURL);
 
 var services = function(app){
-    app.post('/write-record', function(req, response){
+    app.post('/write-record', async function(req, res){
         var id = "book" + Date.now();
 
         var bookData = {
@@ -18,84 +22,71 @@ var services = function(app){
             isbn:req.body.isbn
         };
 
-        var bookClubData = [];
+        var search = { bookTitle:req.body.bookTitle };
 
-        if(fs.existsSync(DB_FILE)){
-            fs.readFile(DB_FILE, "utf8", function(err, data){
-                if(err){
-                    response.send(JSON.stringify({msg: err}));
-                } else{
-                    bookClubData = JSON.parse(data);
+        try {
+            const conn = await client.connect();
+            const db = conn.db("bookClub");
+            const coll = db.collection("books");
 
-                    bookClubData.push(bookData);
+            const book = await coll.find(search).toArray();
+            
+            if (book.length > 0){
+                await conn.close();
+                return res.send(JSON.stringify({ msg:"Book already exists!" }));
+            } else {
+                await coll.insertOne(bookData);
+                await conn.close();
+                return res.send(JSON.stringify({ msg:"SUCCESS" }));
+            }
 
-                    fs.writeFile(DB_FILE, JSON.stringify(bookClubData), function(err){
-                        if(err){
-                            response.send(JSON.stringify({msg: err}));
-                        } else {
-                            response.send(JSON.stringify({msg: "SUCCESS"}));
-                        }
-                    })
-                }
-            });
-        } else{
-            bookClubData.push(bookData);
-
-            console.log(JSON.stringify(bookClubData));
-            console.log(DB_FILE);
-
-            fs.writeFile(DB_FILE, JSON.stringify(bookClubData), function(err){
-                if(err){
-                    response.send(JSON.stringify({msg: err}));
-                } else {
-                    response.send(JSON.stringify({msg: "SUCCESS"}));
-                }
-            })
+        } catch(error){
+            await conn.close();
+            return res.send(JSON.stringify({ msg:"Error" + error }));
         }
 
     });
 
 
-    app.get('/get-records', function(req, response) {
-        if (fs.existsSync(DB_FILE)) {
-            fs.readFile(DB_FILE, "utf8", function(err, data) {
-                if (err) {
-                    response.send(JSON.stringify({msg: err}));
-                } else {
-                    console.log("Data read from file:", data);
-                    response.send(JSON.stringify({msg: "SUCCESS", data: JSON.parse(data)}));
-                }
-            });
-        } else {
-            response.send(JSON.stringify({msg: "SUCCESS", data: []}));
+    app.get('/get-records', async function(req, res) {
+        try {
+            const conn = await client.connect();
+            const db = conn.db("bookClub");
+            const coll = db.collection("books");
+
+            const data = await coll.find().toArray();
+
+            await conn.close();
+
+            return res.send(JSON.stringify({ msg:"SUCCESS", books: data }));
+
+        } catch(error){
+            await conn.close();
+            return res.send(JSON.stringify({ msg:"Error" + error }));
         }
     });
 
 
-    app.delete('/delete-record', function (req, response) {
+    app.delete('/delete-record', async function (req, res) {
 
         const recordID = req.body.id;
-        console.log("Deleting record with ID:", recordID);
-    
-        if (fs.existsSync(DB_FILE)) {
-            fs.readFile(DB_FILE, "utf8", function (err, data) {
-                if (err) {
-                    response.send(JSON.stringify({ msg: err }));
-                } else {
-                    let bookClubData = JSON.parse(data);
-                    bookClubData = bookClubData.filter((record) => record.id !== recordID);
-    
-                    fs.writeFile(DB_FILE, JSON.stringify(bookClubData), function (err) {
-                        if (err) {
-                            response.send(JSON.stringify({ msg: err }));
-                        } else {
-                            response.send(JSON.stringify({ msg: "SUCCESS" }));
-                        }
-                    });
-                }
-            });
-        } else {
-            response.send(JSON.stringify({ msg: "No records found!" }));
+
+        try {
+            const conn = await client.connect();
+            const db = conn.db("bookClub");
+            const coll = db.collection("books");
+
+            const result = await coll.deleteOne({ id: recordID });
+
+            await conn.close();
+
+            if (result.deletedCount === 0) {
+                return res.send(JSON.stringify({ msg: "Record not found!" }));
+            }
+            return res.send(JSON.stringify({ msg: "SUCCESS" }));
+        } catch (error) {
+            console.error("Error deleting record:", error);
+            return res.send(JSON.stringify({ msg: "Error: " + error }));
         }
     });
     

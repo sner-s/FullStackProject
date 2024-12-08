@@ -15,7 +15,7 @@ app.controller('browseDataCtrl', function($scope, $http){
         }).then(function (response){
             //Successfully connected to the server
             if(response.data.msg === "SUCCESS"){
-                books = response.data.data;
+                books = response.data.books;
                 console.log(books);
                 $scope.obj = books[activeBook];
                 $scope.showHide();
