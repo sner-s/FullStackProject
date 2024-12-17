@@ -1,6 +1,6 @@
 const { res } = require('express');
 
-const { MongoClient, ObjectID } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 //Define Database URL
 const dbURL = "mongodb://127.0.0.1";
@@ -66,29 +66,29 @@ var services = function(app){
         }
     });
 
-
-    app.delete('/delete-record', async function (req, res) {
-
-        const recordID = req.body.id;
-
-        try {
+    app.delete('/delete-record', async function(req, res) {
+        
+        try{
             const conn = await client.connect();
             const db = conn.db("bookClub");
             const coll = db.collection("books");
+            
+            const search = { _id: ObjectId.createFromHexString(req.body._id) };
 
-            const result = await coll.deleteOne({ id: recordID });
+            await coll.deleteOne(search);
 
             await conn.close();
 
-            if (result.deletedCount === 0) {
-                return res.send(JSON.stringify({ msg: "Record not found!" }));
-            }
-            return res.send(JSON.stringify({ msg: "SUCCESS" }));
-        } catch (error) {
-            console.error("Error deleting record:", error);
-            return res.send(JSON.stringify({ msg: "Error: " + error }));
+            return res.send(JSON.stringify({msg: "SUCCESS" }));
+
+        } catch(error){
+            
+            console.log(error);
+            return res.send(JSON.stringify({ msg:"Error" + error }));
         }
+
     });
+
     
 };
 
@@ -96,3 +96,4 @@ var services = function(app){
 
 
 module.exports = services;
+

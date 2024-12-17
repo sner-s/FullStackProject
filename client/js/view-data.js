@@ -4,7 +4,6 @@ main();
 
 function main() {
     fetchRecords();
-    deleteRecord();
 }
 
 function showTable(data){
@@ -13,13 +12,14 @@ function showTable(data){
 
     for(var i = 0; i < data.length; i++){
         htmlString += "<tr>";
+            htmlString += "<td>" + data[i]._id + "</td>";
             htmlString += "<td>" + data[i].bookTitle + "</td>";
             htmlString += "<td>" + data[i].author + "</td>";
             htmlString += "<td>" + data[i].genre + "</td>";
             htmlString += "<td>" + data[i].publisher + "</td>";
             htmlString += "<td>" + data[i].yearPublished + "</td>";
             htmlString += "<td>" + data[i].isbn + "</td>";
-            htmlString += `<td><button class="delete-btn" data-id="${data[i].id}">Delete</button></td>`;
+            htmlString += `<td><button class="delete-btn" data-id="${data[i]._id}">Delete</button></td>`;
         htmlString += "</tr>";
     }
 
@@ -47,18 +47,22 @@ function fetchRecords() {
     });
 }
 
+
+
 function activateDeleteListeners() {
     $(".delete-btn").click(function () {
         var deleteID = this.getAttribute("data-id");
+        console.log("Deleting ID:", deleteID);
         deleteRecord(deleteID);
     });
 }
 
 function deleteRecord(deleteID) {
+    console.log("Deleting ID:", deleteID);
     $.ajax({
         url: bookclubURL + "/delete-record", 
         type: "DELETE",
-        data: JSON.stringify({ id: deleteID }), 
+        data: JSON.stringify({ _id: deleteID }), 
         contentType: "application/json",
         success: function (response) {
             var responseData = JSON.parse(response);
@@ -69,6 +73,7 @@ function deleteRecord(deleteID) {
             }
         },
         error: function (err) {
+            
             console.log(err);
         }
     });
