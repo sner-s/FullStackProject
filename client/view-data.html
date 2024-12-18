@@ -1,63 +1,130 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Data</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <link rel="stylesheet" href="/client/css/view-data.css">
     <link rel="stylesheet" href="/client/css/homepage.css">
-    <script src="/client/js/view-data.js" async></script>
+    <script src="/client/js/view-data.js" ></script>
 </head>
+<body ng-app="bookclubApp" ng-controller="viewCtrl" data-ng-init="hideForm=true">
 
-
-<body>
     <nav>
         <div class="nav-content">
-          <div class="logo">
-            <a href="#">View Data</a>
-          </div>
-          <ul class="nav-links">
-            <li><a href="/home">Home</a></li>
-            <li><a href="/write-data">Enter Data</a></li>
-            <li><a href="/view-data">View Data</a></li>
-            <li><a href="/browse-data">Browse Data</a></li>
-            <li><a href="/calendar">Calendar</a></li>
-            <li><a href="/our-reads">Our Reads</a></li>
-          </ul>
+            <div class="logo">
+                <a href="#">View Data</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/write-data">Enter Data</a></li>
+                <li><a href="/view-data">View Data</a></li>
+                <li><a href="/browse-data">Browse Data</a></li>
+                <li><a href="/calendar">Calendar</a></li>
+                <li><a href="/our-reads">Our Reads</a></li>
+            </ul>
         </div>
     </nav>
 
-    <section class="home"></section>
-    <div>
+    <section data-ng-hide="hideTable" >
+      <div class="sort" >
+        <label for="groupby">Author</label>
+        <select id="groupby"
+                data-ng-model="selectedAuthor"
+                data-ng-options="author.display for author in authors"
+                data-ng-change="redrawTable()">
+        </select>
+      </div>
+
+      <div>
         <table class="table">
-          <colgroup>
-            <col class='col-xs-3'>
-          </colgroup>
           <thead>
             <tr>
                 <th colspan="6">Book Log</th>
             </tr>
             <tr>
-              <th>Book Title</th>
-              <th>Author</th>
-              <th>Genre</th>
-              <th>Publisher</th>
-              <th>Year Published</th>
-              <th>ISBN</th>
-              <th></th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Publisher</th>
+                <th>Year Published</th>
+                <th>ISBN</th>
+                <th></th>
             </tr>
-          </thead>
-          <tbody id='libraryTable'></tbody>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="obj in books">
+            <td>{{obj.title}}</td>
+            <td>{{obj.author}}</td>
+            <td>{{obj.genre}}</td>
+            <td>{{obj.publisher}}</td>
+            <td>{{obj.yearPublished}}</td>
+            <td>{{obj.isbn}}</td>
+            <td>
+              <button data-ng-click="editBook($index)">Edit</button>
+            </td>
+            <td>
+              <button data-ng-click="deleteBook(obj._id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+
+
+          
         </table>
       </div>
+    </section>
+
+    <section class="formStyle" data-ng-hide="hideForm">
+      <div class="text" id="form-container">
+        <label data-ng-model="bookID" hidden></label>
+        <div class="form-group">
+          <label for="title" class="form-medium">Book Title:</label>
+          <input class="form-control" type="text" id="title" data-ng-model="title">
+        </div>
+  
+        <div class="form-group">
+          <label for="author" class="form-medium">Author:</label>
+          <input class="form-control" type="text" id="author" data-ng-model="author">
+        </div>
+  
+        <div class="form-group">
+          <label for="genre" class="form-medium">Genre:</label>
+          <input class="form-control" type="text" id="genre" data-ng-model="genre">
+        </div>
+  
+        <div class="form-group">
+          <label for="publisher" class="form-medium">Publisher:</label>
+          <input class="form-control" type="text" id="publisher" data-ng-model="publisher">
+        </div>
+
+        <div class="form-group">
+          <label for="yearPublished" class="form-medium">Year Published:</label>
+          <input class="form-control" type="text" id="yearPublished" data-ng-model="yearPublished">
+        </div>
+
+        <div class="form-group">
+          <label for="isbn" class="form-medium">ISBN:</label>
+          <input class="form-control" type="text" id="isbn" data-ng-model="isbn">
+        </div>
+  
+        <div class="button-container">
+          <div class="config-buttons">
+            <button class="edit_btn" id="submit" data-ng-click="updateBook()">Update</button>
+          </div>
+        
+
+          <div class="config-buttons">
+            <button class="edit_btn" id="cancelButton" data-ng-click="cancelUpdate()">Cancel</button>
+          </div>
+        </div>
+  
+        
+    </section>
 
 
+    
 </body>
-
-
 </html>

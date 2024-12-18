@@ -1,126 +1,148 @@
 var bookclubURL = 'http://localhost:5000';
 
-main();
+var app = angular.module("bookclubApp", []);
 
-function main() {
-    fetchRecords();
-}
+app.controller("viewCtrl", function($scope, $http){
+    $scope.books = [];
 
-function showTable(data){
-    console.log("Data received for table:", data);
-    var htmlString = "";
+    // Fetch all book records
+    $scope.get_records = function(){
+        $http({
+            method: 'get',
+            url: bookclubURL + "/get-records" 
+        }).then(function (response){
+            if(response.data.msg === "SUCCESS"){
+                $scope.books = response.data.books;
+                $scope.authors = getAuthors(response.data.books);
+                console.log($scope.authors);  
+                $scope.selectedAuthor = $scope.authors[0];
+            } else{
+                console.log(response.data.msg);
+            }
+        }, function(error){
+            console.log(error);
+        });
+    };
 
-    for(var i = 0; i < data.length; i++){
-        htmlString += "<tr>";
-            htmlString += "<td>" + data[i]._id + "</td>";
-            htmlString += "<td>" + data[i].bookTitle + "</td>";
-            htmlString += "<td>" + data[i].author + "</td>";
-            htmlString += "<td>" + data[i].genre + "</td>";
-            htmlString += "<td>" + data[i].publisher + "</td>";
-            htmlString += "<td>" + data[i].yearPublished + "</td>";
-            htmlString += "<td>" + data[i].isbn + "</td>";
-            htmlString += `<td><button class="delete-btn" data-id="${data[i]._id}">Delete</button></td>`;
-        htmlString += "</tr>";
+    // Fetch books by selected author
+    $scope.redrawTable = function(){
+        var author = $scope.selectedAuthor.value;
+
+        $http({
+            method: 'get',
+            url: "/get-booksByAuthor", 
+            params: {author: author}
+        }).then(function (response){
+            if(response.data.msg === "SUCCESS"){
+                $scope.books = response.data.books;
+            } else{
+                console.log(response.data.msg);
+            }
+        }, function(error){
+            console.log(error);
+        });
+    };
+
+    
+    $scope.editBook = function(bookIndex){
+        $scope.title = $scope.books[bookIndex].title;
+        $scope.author = $scope.books[bookIndex].author;
+        $scope.genre = $scope.books[bookIndex].genre;
+        $scope.publisher = $scope.books[bookIndex].publisher;
+        $scope.yearPublished = $scope.books[bookIndex].yearPublished;
+        $scope.isbn = $scope.books[bookIndex].isbn;
+        $scope.bookID = $scope.books[bookIndex]['_id'];
+
+        $scope.hideTable = true;
+        $scope.hideForm = false;
+    };
+
+    // Cancel update and show the table again
+    $scope.cancelUpdate = function(){
+        $scope.hideTable = false;
+        $scope.hideForm = true;
+    };
+
+    // Update the book information
+    $scope.updateBook = function(){
+        console.log(req.body);
+        if($scope.title === "" || $scope.author === "" || $scope.genre === "" || $scope.publisher === "" || $scope.yearPublished === "" || $scope.isbn === ""){
+            $scope.addResults = "Title, author, genre, publisher, year published, and isbn are required";
+            return;
+        }
+
+        $http({
+            method: 'put',
+            url: bookclubURL + "/update-record",
+            data: {
+                ID: $scope.bookID,
+                title: $scope.title,
+                author: $scope.author,
+                genre: $scope.genre,
+                publisher: $scope.publisher,
+                yearPublished: $scope.yearPublished,
+                isbn: $scope.isbn
+            }
+        }).then(function (response){
+            if(response.data.msg === "SUCCESS"){
+                $scope.cancelUpdate();
+                $scope.redrawTable();
+                console.log(response.data.msg);
+                $scope.title = "";
+                $scope.author = "";
+                $scope.genre = "";
+                $scope.publisher = "";
+                $scope.yearPublished = "";
+                $scope.isbn = "";
+            } else{
+                $scope.addResults = response.data.msg;
+            }
+        }, function(error){
+            console.log(error);
+        });
+    };
+
+    // Delete a book
+    $scope.deleteBook = function(id){
+        console.log(id);
+
+        $http({
+            method: 'delete',
+            url: "/delete-record",
+            params: {bookID: id}
+        }).then(function (response){
+            if(response.data.msg === "SUCCESS"){
+                $scope.redrawTable();
+            } else{
+                console.log(response.data.msg);
+            }
+        }, function(error){
+            console.log(error);
+        });
+    };
+
+    // Initial call to populate books
+    $scope.get_records();
+
+});
+
+
+function getAuthors(bookTableData){
+    var authorExists;
+
+    var authorArray = [{value: "", display: "ALL"}];
+
+    for (i = 0; i < bookTableData.length; i++) {
+        authorExists = authorArray.find(function(element){
+            return element.value === bookTableData[i].author;
+        });
+
+        if (authorExists){
+            continue;
+        } else {
+            authorArray.push({value: bookTableData[i].author, display: bookTableData[i].author});
+        }
     }
 
-    $("#libraryTable").html(htmlString);
-    activateDeleteListeners();
+    return authorArray;
 }
-
-// Function to submit data to the server
-function fetchRecords() {
-    $.ajax({
-        url: bookclubURL + "/get-records", 
-        type: "GET",
-        success: function(response) {
-            var responseData = JSON.parse(response);
-            console.log(responseData.books);
-            if (responseData.msg == "SUCCESS") {
-                showTable(responseData.books);
-            } else {
-                console.log(responseData.msg); 
-            }
-        },
-        error: function(response) {
-            console.log(response); 
-        }
-    });
-}
-
-
-
-function activateDeleteListeners() {
-    $(".delete-btn").click(function () {
-        var deleteID = this.getAttribute("data-id");
-        console.log("Deleting ID:", deleteID);
-        deleteRecord(deleteID);
-    });
-}
-
-function deleteRecord(deleteID) {
-    console.log("Deleting ID:", deleteID);
-    $.ajax({
-        url: bookclubURL + "/delete-record", 
-        type: "DELETE",
-        data: JSON.stringify({ _id: deleteID }), 
-        contentType: "application/json",
-        success: function (response) {
-            var responseData = JSON.parse(response);
-            if (responseData.msg == "SUCCESS") {
-                fetchRecords();
-            } else {
-                console.log(responseData.msg);
-            }
-        },
-        error: function (err) {
-            
-            console.log(err);
-        }
-    });
-}
-
-/*var data = [
-    {
-        bookTitle: "Assassins Blade",
-        author: "Sarah J Maas",
-        genre: "Fantasy",
-        publisher: "Bloomsbury",
-        yearPublished: "2014",
-        isbn: "978-1-63973-1084"
-    },
-    {
-        bookTitle: "Throne of Glass",
-        author: "Sarah J Maas",
-        genre: "Fantasy",
-        publisher: "Bloomsbury",
-        yearPublished: "2012",
-        isbn: "978-1-63973-0940"
-    },
-    {
-        bookTitle: "Crown of Midnight",
-        author: "Sarah J Maas",
-        genre: "Fantasy",
-        publisher: "Bloomsbury",
-        yearPublished: "2013",
-        isbn: "978-1-63973-096"
-    },
-    {
-        bookTitle: "Fourth Wing",
-        author: "Rebecca Yarros",
-        genre: "Fantasy",
-        publisher: "Entangled Publishing",
-        yearPublished: "2023",
-        isbn: "978-1-64937-4042"
-    },
-    {
-        bookTitle: "Iron Flame",
-        author: "Rebecca Yarros",
-        genre: "Fantasy",
-        publisher: "Entangled Publishing",
-        yearPublished: "2023",
-        isbn: "978-1-64937-4172"
-    }
-];
-
-
-jsonObject = data;*/

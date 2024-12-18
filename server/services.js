@@ -1,4 +1,4 @@
-const { res } = require('express');
+const {res}  = require('express');
 
 const { MongoClient, ObjectId } = require('mongodb');
 
@@ -10,11 +10,10 @@ const client = new MongoClient(dbURL);
 
 var services = function(app){
     app.post('/write-record', async function(req, res){
-        var id = "book" + Date.now();
+        var ID = "book" + Date.now();
 
         var bookData = {
-            id: id,
-            bookTitle:req.body.bookTitle, 
+            title:req.body.title, 
             author:req.body.author, 
             genre:req.body.genre, 
             publisher:req.body.publisher, 
@@ -22,7 +21,7 @@ var services = function(app){
             isbn:req.body.isbn
         };
 
-        var search = { bookTitle:req.body.bookTitle };
+        var search = { title:req.body.title };
 
         try {
             const conn = await client.connect();
@@ -47,7 +46,6 @@ var services = function(app){
 
     });
 
-
     app.get('/get-records', async function(req, res) {
         try {
             const conn = await client.connect();
@@ -66,6 +64,59 @@ var services = function(app){
         }
     });
 
+    app.get("/get-booksByAuthor", async function(req, res) {
+        var search = (req.query.author === "") ? { } : {author: req.query.author};
+
+        try{
+            const conn = await client.connect();
+            const db = conn.db("bookClub");
+            const coll = db.collection("books");
+
+            const data = await coll.find(search).toArray();
+
+            await conn.close();
+
+            return res.send(JSON.stringify({ msg:"SUCCESS", books: data }));
+
+        } catch (error){
+            //await conn.close();
+            return res.send(JSON.stringify({ msg:"Error" + error }));
+        }
+    });
+
+    app.put('/update-record', async function(req, res) {
+        var updateData = {
+            $set: {
+                title:req.body.title, 
+                author:req.body.author, 
+                genre:req.body.genre, 
+                publisher:req.body.publisher, 
+                yearPublished:req.body.yearPublished, 
+                isbn:req.body.isbn
+            }
+
+         };
+        
+    
+        try {
+            const conn = await client.connect();
+            const db = conn.db("bookClub");
+            const coll = db.collection("books");
+
+            const search = { _id: ObjectId.createFromHexString(req.body.ID) };
+    
+            await coll.updateOne(search, updateData);
+
+            await conn.close();
+    
+            return res.send(JSON.stringify({ msg: "SUCCESS" }));
+
+        } catch (error) {
+            console.error(error);
+            return res.send(JSON.stringify({ msg: "Error: " + error }));
+        }
+    });
+
     app.delete('/delete-record', async function(req, res) {
         
         try{
@@ -73,7 +124,8 @@ var services = function(app){
             const db = conn.db("bookClub");
             const coll = db.collection("books");
             
-            const search = { _id: ObjectId.createFromHexString(req.body._id) };
+            const search = { _id: ObjectId.createFromHexString(req.query.bookID) };
+            console.log(search);
 
             await coll.deleteOne(search);
 
@@ -89,11 +141,7 @@ var services = function(app){
 
     });
 
-    
 };
-
-
-
 
 module.exports = services;
 

@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap');
 
 
-table {
+.table {
     background-color: #ffd0c6ea;
     border-radius: 8px; 
     border: 2px solid #ae345d;
-    width: 80%;
-    margin: 20px auto;
+    width: 90%;
+    margin: 100px auto;
 }
 
 .table > thead > tr > th,
@@ -30,4 +30,83 @@ td {
     font-size: 20px;
     text-align:center;
     margin: auto;
+}
+
+.sort{
+    background-color: #ffd0c6ea;
+    border-radius: 8px; 
+    border: 2px solid #ae345d;
+    width: 15%;
+    margin: 100px auto;
+    text-align:center;
+}
+
+/*.formStyle{
+    background-color: #ffd0c6ea;
+    border-radius: 8px; 
+    border: 2px solid #ae345d;
+    width: 30%;
+    margin: 100px auto;
+    text-align:center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}*/
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Spacing between fields */
+}
+
+.form-medium {
+    width: 20%; /* Adjust as needed for label width */
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 40px;
+    text-align: right;
+}
+
+.form-control {
+    width: 70%; /* Take up the rest of the space */
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333333;
+    border: 2px solid #ccc;
+    padding: 5px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.config-buttons {
+    margin-right: 10px;
+}
+
+.edit_btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #ae345d;
+    background-color: #FFD0C6;
+    border-radius: 10px;
+    border: 2px solid #ae345d;
+    cursor: pointer;
+}
+
+  #form-container {
+    width: 30%; 
+    margin: 150px auto; 
+    padding: 20px; 
+    background-color: #ffd0c6ea;
+    border-radius: 8px; 
+    border: 2px solid #ae345d;
+}
+  
+.edit_btn:hover {
+    color: rgb(163, 10, 240);
+    background-color: rgb(227, 208, 254);
+    border-radius: 10px;
+    border: 2px solid rgb(163, 10, 240);
 }

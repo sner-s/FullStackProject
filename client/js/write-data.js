@@ -5,14 +5,14 @@ const submitButton = document.getElementById("submit");
 
 
 $('#submit').click(function(){
-    var bookTitle = $("#bookTitle").val();
+    var title = $("#title").val();
     var author = $("#author").val();
     var genre = $("#genre").val();
     var publisher = $("#publisher").val();
     var yearPublished = $("#yearPublished").val();
     var isbn = $("#isbn").val();
 
-    var jsonString = {bookTitle:bookTitle, author:author, genre:genre, publisher:publisher, yearPublished:yearPublished, isbn:isbn};
+    var jsonString = {title:title, author:author, genre:genre, publisher:publisher, yearPublished:yearPublished, isbn:isbn};
 
     $.ajax({
         url: bookclubURL + "/write-record",
@@ -31,7 +31,7 @@ $('#submit').click(function(){
         }
     });
 
-    console.log("Book Title: " + bookTitle);
+    console.log("Title: " + title);
     console.log("Author: " + author);
     console.log("Genre: " + genre);
     console.log("Publisher: " + publisher);
@@ -41,7 +41,7 @@ $('#submit').click(function(){
 
 
 $("#clear").click(function(){
-    $("#bookTitle").val("");
+    $("#title").val("");
     $("#author").val("");
     $("#genre").val("");
     $("#publisher").val("");
